@@ -1,13 +1,13 @@
 //=============================================================================
-// ScienKunScript TitlesScreen (RPG Maker MV 1.3.5)
+// ScienKunScript TitlesScreen (RPG Maker MV 1.5)
 // SKS_TitleMap.js
-// Version du script : 1.02
+// Version du script : 1.03
 // Script qui permet d'utiliser une map en tant que Titlescreen
 //=============================================================================
 
 
 /*:fr
- * @plugindesc v1.02 Utilise une map en tant qu'écran-titre pour votre jeu.
+ * @plugindesc v1.03 Utilise une map en tant qu'écran-titre pour votre jeu.
  * Peut-être un tutoriel dessus un jour
  *
  * @author ScienKun
@@ -36,14 +36,9 @@
  * Lorsque vous voulez lancer une nouvelle partie depuis l'écran-titre, vous devrez
  * utiliser la commande suivante :
  *
- * TitleMap NEW ShowPlayer si vous voulez que le joueur soit visible directement
- * TitleMap NEW HidePlayer si vous voulez que le joueur soit transpartent.
+ * TitleMap NEW 
  *
- * Cela peut servir si vous utilisez la map outil !
- *
- *
- * Lorsque vous voulez activer la fenêtre Charger (Continuer) depuis l'écran-titre,
- * vous devrez utiliser la commande suivante :
+ * Lorque vous voulez accédez à l'écran des sauvegardes :
  *
  * TitleMap LOAD
  * 
@@ -66,7 +61,7 @@
  * Pour vérifier si la map fonctionne, vous pouvez créer un événement parallèle 
  * avec un Afficher les Choix ... et configurer les choix de cette manière :
  * Affichage : Sombre ; Position : Milieu ; Défaut : Choix 1 ; Annuler : Rejeter
- * Choix 1 : Nouvelle Partie { TitleMap NEW ShowPlayer }
+ * Choix 1 : Nouvelle Partie { TitleMap NEW }
  * Choix 2 : Charger Partie { TitleMap LOAD }
  * Choix 3 : Options { TitleMap OPTIONS }
  * Choix 4 : Quitter { TitleMap QUIT }
@@ -75,6 +70,11 @@
  * avec des événements et ce plugin.
  *
  * ===================================CHANGELOGS===================================
+ *
+ * Version 1.03 : 21/08/2017 : 22h46
+ * Le script agit maintenant sans modifier des éléments de la BDD.
+ * Plus besoin de cocher Démarrage transparent, l'équipe est par défaut invisible
+ * sur l'écran-titre.
  *
  * Version 1.02 : 13/07/2017 : 18h27
  * Ajout d'une correction en cas de Game Over
@@ -120,9 +120,9 @@ ScienKun.TitleMap = ScienKun.TitleMap || {};
 				Window_Statut.prototype.visiblity = false;
 			}
 			$gameSystem.disableMenu();
+			$gamePlayer.setTransparent(1);
 			SceneManager.goto(Scene_Map);
 			$gamePlayer.reserveTransfer(ScienKun.Param.idMapTitle, 1, 1, 0, 0);
-			//this.setWaitMode('transfer');
 		}
 		this.updateDocumentTitle();
 	};
@@ -144,11 +144,6 @@ ScienKun.TitleMap = ScienKun.TitleMap || {};
 					AudioManager.fadeOutBgm(3);
 					DataManager.setupNewGame();
 					$gameScreen.startFadeIn(5);
-					if (args[1] === 'HidePlayer') {
-						$gamePlayer.setTransparent(1);
-					} else if (args[1] === 'ShowPlayer') {
-						$gamePlayer.setTransparent(0);
-					}
 					break;
 				case 'LOAD':
 					SceneManager.goto(Scene_Load);
